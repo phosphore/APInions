@@ -1,0 +1,261 @@
+@(tablecontent: String)(jstable: String)
+<html lang="en"><head>
+    <title>API control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="@routes.Assets.at("bootstrap.css")" media="screen">
+    <link rel="stylesheet" href="@routes.Assets.at("font-awesome.min.css")">
+    <link rel="shortcut icon" href="@{routes.Assets.at("favicon.ico")}" />
+   <!-- <link rel="stylesheet" type="text/css" href="@{routes.Assets.at("stylesheets/jchartfx.css")}" /> -->
+    <link rel="stylesheet" type="text/css" href="@{routes.Assets.at("stylesheets/jQueryUI/flick.css")}" />
+    <script src="@{routes.Assets.at("javascripts/jquery-1.3.2.js")}"></script>
+        <script>
+		var xmlhttp;
+		function deleteVote($id, row, $numrow) { 
+			var i=row.parentNode.parentNode.rowIndex;
+			$("del"+$numrow).animate({'backgroundColor':'#fb6c6c'},300);
+			$("del"+$numrow).slideUp(300);
+			document.getElementById('TableVote').deleteRow(i);
+			xmlhttp=new XMLHttpRequest();
+			xmlhttp.open('DELETE','../deleteVote/'+$id,true);
+			xmlhttp.send(null);
+			var rowCount = document.getElementById('TableVote').rows.length;
+			if (!(parseInt(rowCount) == 2))
+			{
+				document.getElementById("meanp").innerHTML="<i>Refresh the page for the mean!</i>";
+				document.getElementById("meanp2").innerHTML="-";
+			}
+			else
+			{
+				document.getElementById("meanp").innerHTML="<i>No votes yet!</i>";
+				document.getElementById("meanp2").innerHTML="-";
+			}
+				
+		}
+		</script>
+		    <script type="text/javascript" src="@{routes.Assets.at("javascripts/jchartfx.system.js")}"></script>
+			<script type="text/javascript" src="@{routes.Assets.at("javascripts/jchartfx.coreVector.js")}"></script>
+			<script type="text/javascript" src="@{routes.Assets.at("javascripts/jchartfx.animation.js")}"></script>
+
+		
+    <style type="text/css">
+
+		@@keyframes animatedBackground {
+			from { background-position: 0 0; }
+			to { background-position: 100% 0; }
+		}
+		@@-webkit-keyframes animatedBackground {
+			from { background-position: 0 0; }
+			to { background-position: 100% 0; }
+		}
+		@@-ms-keyframes animatedBackground {
+			from { background-position: 0 0; }
+			to { background-position: 100% 0; }
+		}
+		@@-moz-keyframes animatedBackground {
+			from { background-position: 0 0; }
+			to { background-position: 100% 0; }
+		}
+
+		body	{ 
+			width: 100%; 
+			height: 100%; 
+			background-color:rgba(192,222,237,1);
+			
+			background-image: url(@{routes.Assets.at("bg-clouds2.png")});
+			background-position: 0px 0px;
+			background-position: center bottom; 
+			background-repeat: repeat-x;
+
+			animation: animatedBackground 90s linear infinite;
+			-ms-animation: animatedBackground 90s linear infinite;
+			-moz-animation: animatedBackground 90s linear infinite;
+			-webkit-animation: animatedBackground 90s linear infinite;
+		}
+		#tables {
+			text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
+			text-color: #ffffff;
+		}
+    
+    </style>
+    
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="@routes.Assets.at("html5shiv.js")"></script>
+      <script src="@routes.Assets.at("respond.min.js")"></script>
+    <![endif]-->
+    
+  </head>
+  <body onload="loadChart();">
+    
+
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="http://www.citrussuite.com/" target="_blank"><img src="@routes.Assets.at("CSlogo.png")" title="Home" alt="Logo Citrus Suite"></a><a class="navbar-brand" href="../">API</a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main"> 
+		<ul class="nav navbar-nav navbar-right">
+			<li><p style="color: white;">Hello, @{session().get("email")}&nbsp;&nbsp;</p></li>
+            <li><a href="@routes.Application.logout()"><img alt="Logout" title="Logout" src="@routes.Assets.at("logout.png")"></a></li>
+          </ul>
+       </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+
+      <div class="page-header" id="banner">
+        
+      </div>
+
+      
+      
+
+
+      
+      
+
+		
+      <div class="bs-docs-section">
+
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="page-header">
+              <h1 id="tables">Votes so far</h1>
+            </div>
+            
+      
+      <div id="ChartDiv" style="width:100%;height:300px;display:inline-block"></div>
+      		<script type="text/javascript" language="javascript">
+				var chart1;
+			Object.size = function(obj) {
+				var size = 0, key;
+				for (key in obj) {
+					if (obj.hasOwnProperty(key)) size++;
+				}
+				return size;
+			};
+    function loadChart()
+      {        
+
+			chart1 = new cfx.Chart();
+            chart1.getAnimations().getLoad().setEnabled(true);
+            chart1.getData().setSeries(1);
+            chart1.getAxisY().setMin(1);
+            chart1.getAxisY().setMax(10);
+            chart1.getAxisY().setStep(1);
+            var data = chart1.getData();
+			data.setSeries(1);
+            var series1 = chart1.getSeries().getItem(0);
+            series1.setGallery(cfx.Gallery.Lines);       
+            
+            var items = [@Html(jstable)];
+            data.setPoints(items.size);
+            chart1.setDataSource(items);
+            var fields = chart1.getDataSourceSettings().getFields();
+			var field1 = new cfx.FieldMap();
+			var field2 = new cfx.FieldMap();
+			
+			field1.setName("Date");
+			field1.setUsage(cfx.FieldUsage.XValue);
+			fields.add(field1);
+			
+			field2.setName("Value");
+			field2.setUsage(cfx.FieldUsage.Value);
+			fields.add(field2);
+            
+            
+            var divHolder = document.getElementById('ChartDiv');
+			chart1.create(divHolder);            
+		  
+		  
+            //chart1 = new cfx.Chart();
+            //chart1.getAnimations().getLoad().setEnabled(true);
+            //chart1.getData().setSeries(2);
+            //chart1.getAxisY().setMin(800);
+            //chart1.getAxisY().setMax(2300);
+            //var series1 = chart1.getSeries().getItem(0);
+            //var series2 = chart1.getSeries().getItem(1);
+            //series1.setGallery(cfx.Gallery.Lines);
+            //series2.setGallery(cfx.Gallery.Bar);
+            //var data = [
+            //{ "Month": "Jan", "Bikes": 1800, "Parts": 1300 },
+            //{ "Month": "Feb", "Bikes": 1760, "Parts": 900 },
+            //{ "Month": "Mar", "Bikes": 1740, "Parts": 970 },
+            //{ "Month": "Apr", "Bikes": 1750, "Parts": 1010},
+            //{ "Month": "May", "Bikes": 1810, "Parts": 1070 },
+            //{ "Month": "Jun", "Bikes": 1920, "Parts": 1180 },
+            //{ "Month": "Jul", "Bikes": 2021, "Parts": 1370 },
+            //{ "Month": "Aug", "Bikes": 2110, "Parts": 1470 },
+            //{ "Month": "Sep", "Bikes": 2210, "Parts": 1570 },
+            //];
+            //chart1.setDataSource(data);
+            //var divHolder = document.getElementById('ChartDiv');
+        //chart1.create(divHolder);            
+      }
+		</script>
+		<div class="page-header">
+              <h1 id="tables"></h1>
+</div><br/>
+            <div class="bs-example">
+              <table class="table table-striped table-bordered table-hover" id="TableVote">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Vote</th>
+                    <th>IP</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+						@Html(tablecontent)
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      
+
+      
+      
+
+      
+      
+
+      
+      
+
+      
+      
+
+
+      <footer>
+        <div class="row">
+          <div class="col-lg-12">
+            
+            <br/>
+            <i><p align="right"><img src="@{routes.Assets.at("logomin.png")}"></img>&nbsp;A <a href="http://www.citrussuite.com/" target="_blank">Citrus Suite</a> work.</p></i>
+            
+            
+
+          </div>
+        </div>
+        
+      </footer>
+    
+
+    </div>
+    
+     
+</body></html>
