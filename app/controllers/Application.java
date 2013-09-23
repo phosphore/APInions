@@ -29,6 +29,7 @@ public class Application extends Controller {
 	public static String Jstable;
 	public static String Imgc;
 	public static String percentages;
+	public static int rft;
 	
     public static Result index() {
 		return redirect(routes.Application.login());
@@ -44,7 +45,7 @@ public class Application extends Controller {
 		session().clear();
 		flash("success", "You've been logged out");
 		return redirect(
-			routes.Application.login()
+			routes.Application.Votes()
 		);
 	}
 	
@@ -62,7 +63,7 @@ public class Application extends Controller {
 	}
 
     public static Result postVote(String vote) {
-		
+    	
 		String remote = request().remoteAddress();
 		if (remote.contains(":"))
 			remote = "127.0.0.1";
@@ -152,13 +153,14 @@ public class Application extends Controller {
 			finally 
 				{
 					tablecontent = tabber(listed);
-					return ok(Votes.render(tablecontent, Jstable, percentages));
+					return ok(Votes.render(tablecontent, Jstable, percentages, Integer.toString(rft)));
 
 				}
   
 }
 
 	public static String tabber(List<String[]> listed) {
+				  rft = 0;
                   int num = 0;
                   int numrow = 0;
                   int vote = 0;
@@ -170,11 +172,15 @@ public class Application extends Controller {
                   String time = "";
                   Jstable = "";
                   String countryname = "";
+                  String today = "";
                   Imgc = "";
                   SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss yyyy/MM/dd");//("yyyy-MM-dd'T'HH:mm:ss':10.280Z'");
 				  DateFormat df2 = new SimpleDateFormat("yyy-MM-dd'T'HH:mm':10.280Z'");
+				  SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 				  Date date = new Date();
+				  today = sdf.format(date);
                   long sum = 0;
+                 
                   
                   String jsdate = "";
                   if (listed.size() == 0)
@@ -208,12 +214,15 @@ public class Application extends Controller {
 						sum += vote;
 						try {
 						date = df.parse(time);
+						
 						} catch (Exception ex)
 						{
 							ex.printStackTrace();
 						} finally {
+							if (today.equals(sdf.format(date)))
+								rft++;
 							jsdate = df2.format(date);
-							Jstable = Jstable + "{ \"Date\": \""+jsdate+"\", \"Vote\": "+vote+" }";
+							Jstable = Jstable + "{ \"Date\": \""+jsdate+"\", \"Votes\": "+vote+" }";
 							
 							
 							
@@ -250,8 +259,8 @@ public class Application extends Controller {
   				for (int i = 10; i > 0; i--)
 				{
 					float perc = 0;
-					perc = (percentvoti[i-1]*size);//100;
-	  				percentages = percentages + "<tr><td>"+i+"</td><td><b>"+perc+" %</b></td></tr>"; 
+					perc = (percentvoti[i-1]*size);
+	  				percentages = percentages + "<tr class=\""+result+"\"><td><i>"+i+"</i></td><td><b>"+perc+" %</b></td></tr>"; 
 				}
 		 
 				  }
