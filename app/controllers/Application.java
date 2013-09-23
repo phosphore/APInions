@@ -28,6 +28,7 @@ public class Application extends Controller {
   
 	public static String Jstable;
 	public static String Imgc;
+	public static String percentages;
 	
     public static Result index() {
 		return redirect(routes.Application.login());
@@ -151,7 +152,7 @@ public class Application extends Controller {
 			finally 
 				{
 					tablecontent = tabber(listed);
-					return ok(Votes.render(tablecontent, Jstable));
+					return ok(Votes.render(tablecontent, Jstable, percentages));
 
 				}
   
@@ -164,6 +165,8 @@ public class Application extends Controller {
                   String ipadd = "";
                   String table = "";
                   String result = "";
+                  int[] percentvoti = new int[10];
+                  percentages = "";
                   String time = "";
                   Jstable = "";
                   String countryname = "";
@@ -177,6 +180,7 @@ public class Application extends Controller {
                   if (listed.size() == 0)
                   {
 					  table = "<tr class=\"warning\"><td><i>No votes yet!</i></td><td>-</td><td>-</td><td>-</td></tr>";
+					  percentages = "<tr class=\"warning\"><td><i>No votes yet!</i></td><td>-</td><td>-</td><td>-</td></tr>";
 				  } else {
                   for (int i = 0; i < listed.size();i++)
                   {
@@ -197,6 +201,8 @@ public class Application extends Controller {
 						else
 							result="danger";
 						
+					    percentvoti[vote-1]++;
+					    
 						ipadd=listed.get(i)[1];
 						time=listed.get(i)[2];
 						sum += vote;
@@ -206,33 +212,32 @@ public class Application extends Controller {
 						{
 							ex.printStackTrace();
 						} finally {
-						jsdate = df2.format(date);
-						Jstable = Jstable + "{ \"Date\": \""+jsdate+"\", \"Vote\": "+vote+" }";
-						
-						
-						
-					int caching2 = IP2Country.MEMORY_MAPPED;
-					try{
-					IP2Country ip2c = new IP2Country("ip2c/ip-to-country.bin",caching2);
-					Country c = ip2c.getCountry(ipadd);
-					countryname = c.getName();
-						if (c == null)
+							jsdate = df2.format(date);
+							Jstable = Jstable + "{ \"Date\": \""+jsdate+"\", \"Vote\": "+vote+" }";
+							
+							
+							
+						int caching2 = IP2Country.MEMORY_MAPPED;
+						try{
+						IP2Country ip2c = new IP2Country("ip2c/ip-to-country.bin",caching2);
+						Country c = ip2c.getCountry(ipadd);
+						countryname = c.getName();
+							if (countryname == "")
+							{
+								Imgc = "UNKNOWN";	
+							}
+							else
+							{		
+								Imgc = c.get2cStr().toLowerCase();	
+							}
+						} catch (Exception ex)
 						{
-							Imgc = "UNKNOWN";	
+						ex.printStackTrace();
+						} finally {
+							
+						table = table + "<div id=\"del"+numrow+"\" style=\"display: block\"><tr id=\"del"+numrow+"\" class=\""+result+"\"><td>"+num+"</td><td><b>"+vote+"</b></td><td>"+ipadd+"<img src=\"/assets/images/"+Imgc+".png\" title=\""+countryname+"\" align=\"right\"></img></td><td>"+time+"<img class=\"delete\" src=\"/assets/delete.png\" onclick=\"deleteVote("+num+",this,"+numrow+");\" align=\"right\"></img></td></tr></div>";
+						numrow++;
 						}
-						else
-						{		
-							Imgc = c.get2cStr().toLowerCase();	
-						}
-					} catch (Exception ex)
-					{
-					ex.printStackTrace();
-					} finally {
-					
-						
-					table = table + "<div id=\"del"+numrow+"\" style=\"display: block\"><tr id=\"del"+numrow+"\" class=\""+result+"\"><td>"+num+"</td><td><b>"+vote+"</b></td><td>"+ipadd+"<img src=\"/assets/images/"+Imgc+".png\" title=\""+countryname+"\" align=\"right\"></img></td><td>"+time+"<img class=\"delete\" src=\"/assets/delete.png\" onclick=\"deleteVote("+num+",this,"+numrow+");\" align=\"right\"></img></td></tr></div>";
-					numrow++;
-					}
 					}
 					
 					
@@ -241,7 +246,13 @@ public class Application extends Controller {
 			}
                   int mean = (int)Math.round((((double) sum) / listed.size()));
   				table = table + "<tr class=\"warning\"><td><p id=\"meanp\"><b>Mean</b></p></td><td><p id=\"meanp2\">"+mean+"</p></td><td>-</td><td>-</td></tr>";
-				
+				int size = listed.size();
+  				for (int i = 10; i > 0; i--)
+				{
+					float perc = 0;
+					perc = (percentvoti[i-1]*size);//100;
+	  				percentages = percentages + "<tr><td>"+i+"</td><td><b>"+perc+" %</b></td></tr>"; 
+				}
 		 
 				  }
                   return table;
