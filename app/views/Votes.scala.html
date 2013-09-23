@@ -1,4 +1,4 @@
-@(tablecontent: String)(jstable: String)
+@(tablecontent: String)(jstable: String)(percentage: String)
 <html lang="en"><head>
     <title>API control</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -221,7 +221,19 @@
 				  
 								  
 				  <div id="perc">
-					<h2>JS for these tabs</h2>
+					                  <!-- TABLE BEGINS -->
+                  <table class="table table-striped table-bordered table-hover" id="TableVote">
+						<thead>
+						  <tr>
+							<th>Vote</th>
+							<th>%</th>
+						  </tr>
+						</thead>
+						<tbody>
+								@Html(percentage)
+						</tbody>
+					  </table>
+					</div>
 					<!-- content -->
 				  </div>
 			  
