@@ -231,7 +231,7 @@ public class Application extends Controller {
 						IP2Country ip2c = new IP2Country("ip2c/ip-to-country.bin",caching2);
 						Country c = ip2c.getCountry(ipadd);
 						countryname = c.getName();
-							if (countryname == "")
+							if (countryname == "" || c == null)
 							{
 								Imgc = "UNKNOWN";	
 							}
@@ -255,11 +255,11 @@ public class Application extends Controller {
 			}
                   int mean = (int)Math.round((((double) sum) / listed.size()));
   				table = table + "<br/></tbody></table><table class=\"table table-striped table-bordered table-hover\" id=\"meantable\"><tr class=\"warning\"><td><p id=\"meanp\"><b>~ Overall mean</b></p></td><td><p id=\"meanp2\">"+mean+"</p></td><td>-</td><td>-</td></tr></table>";
-				double size = listed.size()+1;
+				double size = listed.size();
   				for (int i = 10; i > 0; i--)
 				{
-					float perc = 0;
-					perc = (float)((percentvoti[i-1]/size)*100);
+					int perc = 0;
+					perc = Math.round((float)((percentvoti[i-1]/size)*100));
 	  				percentages = percentages + "<tr class=\""+result+"\"><td><i>"+i+"</i></td><td><b>"+perc+" %</b></td></tr>"; 
 				}
 		 
