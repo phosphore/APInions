@@ -254,7 +254,7 @@ public class Application extends Controller {
 				
 			}
                   int mean = (int)Math.round((((double) sum) / listed.size()));
-  				table = table + "<tr class=\"warning\"><td><p id=\"meanp\"><b>Mean</b></p></td><td><p id=\"meanp2\">"+mean+"</p></td><td>-</td><td>-</td></tr>";
+  				table = table + "<br/></tbody></table><table class=\"table table-striped table-bordered table-hover\" id=\"meantable\"><tr class=\"warning\"><td><p id=\"meanp\"><b>~ Overall mean</b></p></td><td><p id=\"meanp2\">"+mean+"</p></td><td>-</td><td>-</td></tr></table>";
 				int size = listed.size();
   				for (int i = 10; i > 0; i--)
 				{
