@@ -167,7 +167,7 @@ public class Application extends Controller {
                   String ipadd = "";
                   String table = "";
                   String result = "";
-                  int[] percentvoti = new int[10];
+                  double[] percentvoti = new double[10];
                   percentages = "";
                   String time = "";
                   Jstable = "";
@@ -255,11 +255,11 @@ public class Application extends Controller {
 			}
                   int mean = (int)Math.round((((double) sum) / listed.size()));
   				table = table + "<br/></tbody></table><table class=\"table table-striped table-bordered table-hover\" id=\"meantable\"><tr class=\"warning\"><td><p id=\"meanp\"><b>~ Overall mean</b></p></td><td><p id=\"meanp2\">"+mean+"</p></td><td>-</td><td>-</td></tr></table>";
-				int size = listed.size();
+				double size = listed.size()+1;
   				for (int i = 10; i > 0; i--)
 				{
 					float perc = 0;
-					perc = (percentvoti[i-1]*size);
+					perc = (float)((percentvoti[i-1]/size)*100);
 	  				percentages = percentages + "<tr class=\""+result+"\"><td><i>"+i+"</i></td><td><b>"+perc+" %</b></td></tr>"; 
 				}
 		 
