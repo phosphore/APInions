@@ -175,7 +175,7 @@ public class Application extends Controller {
                   String today = "";
                   Imgc = "";
                   SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss yyyy/MM/dd");//("yyyy-MM-dd'T'HH:mm:ss':10.280Z'");
-				  DateFormat df2 = new SimpleDateFormat("yyy-MM-dd'T'HH:mm':10.280Z'");
+				  DateFormat df2 = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 				  SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 				  Date date = new Date();
 				  today = sdf.format(date);
