@@ -14,10 +14,10 @@
 	  $(document).ready(function(){ 
 		  var options = {
               rowsPerPage : 10,
-              firstArrow : (new Image()).src="@{routes.Assets.at("/images/first.gif")}",
-              prevArrow : (new Image()).src="@{routes.Assets.at("/images/prev.gif")}",
-              lastArrow : (new Image()).src="@{routes.Assets.at("/images/last.gif")}",
-              nextArrow : (new Image()).src="@{routes.Assets.at("/images/next.gif")}"
+              firstArrow : (new Image()).src="@{routes.Assets.at("images/first.gif")}",
+              prevArrow : (new Image()).src="@{routes.Assets.at("images/prev.gif")}",
+              lastArrow : (new Image()).src="@{routes.Assets.at("images/last.gif")}",
+              nextArrow : (new Image()).src="@{routes.Assets.at("images/next.gif")}"
             }
 		  $('#tab-container').easytabs();
 		  $('#TableVote').tablePagination(options);
@@ -279,7 +279,7 @@
 			chart2 = new cfx.Chart();
 			var td;
 			td = new cfx.TitleDockable();
-			td.setText("Votes %, Doughnut");
+			td.setText("Votes %");
 			chart2.getTitles().add(td);
 			chart2.setGallery(cfx.Gallery.Doughnut);
 			var datap = chart2.getData();
@@ -328,7 +328,7 @@
 							<th scope="col">#</th>
 							<th scope="col">Vote</th>
 							<th scope="col">IP</th>
-							<th scope="col">Time</th>
+							<th scope="col">Time <input type="text" id="search" placeholder="Search exact date" style="font-size: 15px; float: right;padding: 0;border: 0;margin: 0;border-radius: 4px;"></input></th>
 						  </tr>
 						</thead>
 						<tbody>
