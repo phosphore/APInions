@@ -1,4 +1,4 @@
-@(tablecontent: String)(jstable: String)(percentages: String)(rft: String)
+@(tablecontent: String)(jstable: String)(percentages: String)(rft: String)(percg: String)
 <html lang="en"><head>
     <title>API control</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,10 +14,10 @@
 	  $(document).ready(function(){ 
 		  var options = {
               rowsPerPage : 10,
-              firstArrow : (new Image()).src="@{routes.Assets.at("images/first.gif")}",
-              prevArrow : (new Image()).src="@{routes.Assets.at("images/prev.gif")}",
-              lastArrow : (new Image()).src="@{routes.Assets.at("images/last.gif")}",
-              nextArrow : (new Image()).src="@{routes.Assets.at("images/next.gif")}"
+              firstArrow : (new Image()).src="@{routes.Assets.at("/images/first.gif")}",
+              prevArrow : (new Image()).src="@{routes.Assets.at("/images/prev.gif")}",
+              lastArrow : (new Image()).src="@{routes.Assets.at("/images/last.gif")}",
+              nextArrow : (new Image()).src="@{routes.Assets.at("/images/next.gif")}"
             }
 		  $('#tab-container').easytabs();
 		  $('#TableVote').tablePagination(options);
@@ -51,6 +51,7 @@
 		    <script type="text/javascript" src="@{routes.Assets.at("javascripts/jchartfx.system.js")}"></script>
 			<script type="text/javascript" src="@{routes.Assets.at("javascripts/jchartfx.coreVector.js")}"></script>
 			<script type="text/javascript" src="@{routes.Assets.at("javascripts/jchartfx.animation.js")}"></script>
+			<script type="text/javascript" src="@{routes.Assets.at("javascripts/jchartfx.advanced.js")}"></script>
 
 <style type="text/css">
 			.etabs { margin: 0 0 0 10; padding: 0; }
@@ -224,6 +225,10 @@
       <div id="ChartDiv" style="width:100%;height:300px;display:inline-block"></div>
       		<script type="text/javascript" language="javascript">
 				var chart1;
+				var chart2;
+				
+				
+				
 			Object.size = function(obj) {
 				var size = 0, key;
 				for (key in obj) {
@@ -262,9 +267,47 @@
             
             
             var divHolder = document.getElementById('ChartDiv');
-			chart1.create(divHolder);            
+			chart1.create(divHolder);
+			
 		            
       }
+      
+      function loadChartp() {
+		  	//////////////////////////////////////////////////////////////////////
+			//		CHART PERCENTAGES      ///////////////////////////////////////
+			//////////////////////////////////////////////////////////////////////
+			chart2 = new cfx.Chart();
+			var td;
+			td = new cfx.TitleDockable();
+			td.setText("Votes %, Doughnut");
+			chart2.getTitles().add(td);
+			chart2.setGallery(cfx.Gallery.Doughnut);
+			var datap = chart2.getData();
+			//data.setItem(0, 0, (20));
+			//data.setItem(0, 1, (45));
+			//data.setItem(0, 2, (30));
+			//chart1.getPoints().getItem(0).setFillMode(cfx.FillMode.Gradient);
+			//chart1.getPoints().getItem(1).setFillMode(cfx.FillMode.Gradient);
+			//chart1.getPoints().getItem(2).setFillMode(cfx.FillMode.Gradient);
+			@Html(percg)
+			chart2.getAnimations().getLoad().setEnabled(true);
+			datap.setSeries(1);
+			datap.setPoints(10);
+			chart2.getAllSeries().getPointLabels().setVisible(true);
+			//chart2.getLegendBox().setVisible(false);
+			chart2.getLegendBox().setVisible(false);
+			chart2.getLegendBox().setBorder(cfx.DockBorder.External);
+			chart2.getLegendBox().setContentLayout(cfx.ContentLayout.Center);
+			chart2.getLegendBox().setDock(cfx.DockArea.Right);
+			//chart2.setDataSource(itemsp);
+			
+			var divHolderp = document.getElementById('ChartPerc');
+			chart2.create(divHolderp);
+		  
+		  
+		  
+		  
+	  }
 		</script>
 		<div class="page-header">
               <h1 id="tables"></h1>
@@ -297,6 +340,10 @@
 								  
 				  <div id="perc">
 					                  <!-- TABLE % BEGINS -->
+					        <div id="ChartPerc" style="width:100%;height:300px;display:inline-block">
+					       </div>
+					       
+					       
                   <table class="table table-striped table-bordered table-hover" id="TablePerc">
 						<thead>
 						  <tr>
@@ -315,7 +362,18 @@
                   
 				</div>
 
-
+<script>
+	var boolshown=new Boolean(0);
+		$('#tab-container')
+		  .bind('easytabs:after', function() {
+			$("#perc").each(function() {
+					if(boolshown == false) {
+						loadChartp();
+						boolshown = true;
+					}
+				});
+		  });
+</script>
               
               
 

@@ -30,6 +30,8 @@ public class Application extends Controller {
 	public static String Imgc;
 	public static String percentages;
 	public static int rft;
+	public static String perchart;
+	public static String perchartend;
 	
     public static Result index() {
 		return redirect(routes.Application.login());
@@ -153,7 +155,7 @@ public class Application extends Controller {
 			finally 
 				{
 					tablecontent = tabber(listed);
-					return ok(Votes.render(tablecontent, Jstable, percentages, Integer.toString(rft)));
+					return ok(Votes.render(tablecontent, Jstable, percentages, Integer.toString(rft), perchart));
 
 				}
   
@@ -164,6 +166,7 @@ public class Application extends Controller {
                   int num = 0;
                   int numrow = 0;
                   int vote = 0;
+                  int percchartnum = 0;
                   String ipadd = "";
                   String table = "";
                   String result = "";
@@ -173,6 +176,8 @@ public class Application extends Controller {
                   Jstable = "";
                   String countryname = "";
                   String today = "";
+                  perchart = "";
+                  perchartend = "";
                   Imgc = "";
                   SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss yyyy/MM/dd");//("yyyy-MM-dd'T'HH:mm:ss':10.280Z'");
 				  DateFormat df2 = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -261,7 +266,11 @@ public class Application extends Controller {
 					int perc = 0;
 					perc = Math.round((float)((percentvoti[i-1]/size)*100));
 	  				percentages = percentages + "<tr class=\""+result+"\"><td><i>"+i+"</i></td><td><b>"+perc+" %</b></td></tr>"; 
+	  				perchart = perchart + "datap.setItem(0, "+percchartnum+", ("+perc+"));\r\n";
+	  				perchartend = perchartend +  "chart2.getPoints().getItem("+percchartnum+").setFillMode(cfx.FillMode.Gradient);\r\n";
+				    percchartnum++;
 				}
+				perchart = perchart + perchartend;
 		 
 				  }
                   return table;
