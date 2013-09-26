@@ -25,18 +25,27 @@ import java.text.DateFormat;
 import net.firefang.ip2c.*;
 import org.codehaus.jackson.JsonNode;
 
+
 public class Application extends Controller {
   
 	public static String Jstable;
 	public static String Imgc;
 	public static String percentages;
 	public static int rft;
+	public static int totalvotetab;
 	public static String perchart;
 	public static String perchartend;
 	
+
+	
     public static Result index() {
-		return redirect(routes.Application.login());
+		//String user = session("connected");
+		// if(user != null) {
+			  return redirect(routes.Application.dashboard());
+		//  } else {
+		//return redirect(routes.Application.login());
     }
+
     
     public static Result login() {
 		return ok(login.render(form(Login.class)));
@@ -59,7 +68,7 @@ public class Application extends Controller {
 			session().clear();
 			session("email", loginForm.get().email);
 			return redirect(
-				routes.Application.Votes()
+				routes.Application.dashboard()
 			);
 		}
 	}
@@ -112,6 +121,7 @@ public class Application extends Controller {
 		
 }
 
+@Security.Authenticated(Secured.class)
 	public static Result deleteVote(String id) {
 		
 		Connection conn = play.db.DB.getConnection();
@@ -138,8 +148,9 @@ public class Application extends Controller {
 	
 }
 	
-	@Security.Authenticated(Secured.class)
+@Security.Authenticated(Secured.class)
 	public static Result Votes() {
+    
 		String[] row = new String[4];
 		
 		List<String[]> listed = new ArrayList<String[]>();
@@ -166,11 +177,19 @@ public class Application extends Controller {
 			finally 
 				{
 					tablecontent = tabber(listed);
-					return ok(Votes.render(tablecontent, Jstable, percentages, Integer.toString(rft), perchart));
+					return ok(Votes.render(tablecontent, Jstable, percentages, Integer.toString(rft), perchart, Integer.toString(totalvotetab)));
 
 				}
   
+
 }
+
+
+	@Security.Authenticated(Secured.class)
+    public static Result dashboard() {
+			return ok(dashboard.render());
+	}
+
 
 	public static String tabber(List<String[]> listed) {
 				  rft = 0;
@@ -280,6 +299,7 @@ public class Application extends Controller {
                   int mean = (int)Math.round((((double) sum) / listed.size()));
   				table = table + "<br/></tbody></table><table class=\"table table-striped table-bordered table-hover\" id=\"meantable\"><tr class=\"warning\"><td><p id=\"meanp\"><b>~ Overall mean</b></p></td><td><p id=\"meanp2\">"+mean+"</p></td><td>-</td><td>-</td></tr></table>";
 				double size = listed.size();
+				totalvotetab = (int)size;
   				for (int i = 5; i > 0; i--)
 				{
 					int perc = 0;
@@ -296,7 +316,7 @@ public class Application extends Controller {
 	 }
 	 
 	 
-	 	public static class Login {
+	public static class Login {
 			public String email;
 			public String password;
 			

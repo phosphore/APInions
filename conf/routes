@@ -7,7 +7,10 @@ GET     /                           controllers.Application.index()
 
 # Vote
 POST    /feedback        			controllers.Application.postVote()
+
+#Pages
 GET	    /Votes						controllers.Application.Votes()
+GET		/dashboard					controllers.Application.dashboard()
 DELETE /deleteVote/:id				controllers.Application.deleteVote(id: String)
 
 # Login
