@@ -133,7 +133,7 @@ public class Application extends Controller {
 		
 		List<String[]> listed = new ArrayList<String[]>();
 		Connection conn = play.db.DB.getConnection();
-		String tablecontent;
+		String tablecontent = "";
 		    try {
 				ResultSet rs;
 				Statement stat = conn.createStatement();
@@ -180,7 +180,8 @@ public class Application extends Controller {
                   perchartend = "";
                   Imgc = "";
                   SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss yyyy/MM/dd");//("yyyy-MM-dd'T'HH:mm:ss':10.280Z'");
-				  DateFormat df2 = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                  DateFormat df_tab = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				  DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 				  SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 				  Date date = new Date();
 				  today = sdf.format(date);
@@ -235,7 +236,12 @@ public class Application extends Controller {
 						try{
 						IP2Country ip2c = new IP2Country("ip2c/ip-to-country.bin",caching2);
 						Country c = ip2c.getCountry(ipadd);
-						countryname = c.getName();
+
+							if (c != null)
+							{
+								countryname = c.getName();
+							} else 
+								Imgc = "UNKNOWN";
 							if (countryname == "" || c == null)
 							{
 								Imgc = "UNKNOWN";	
@@ -244,12 +250,14 @@ public class Application extends Controller {
 							{		
 								Imgc = c.get2cStr().toLowerCase();	
 							}
+						
+							
 						} catch (Exception ex)
 						{
 						ex.printStackTrace();
 						} finally {
 							
-						table = table + "<div id=\"del"+numrow+"\" style=\"display: block\"><tr id=\"del"+numrow+"\" class=\""+result+"\"><td>"+num+"</td><td><b>"+vote+"</b></td><td>"+ipadd+"<img src=\"/assets/images/"+Imgc+".png\" title=\""+countryname+"\" align=\"right\"></img></td><td>"+time+"<img class=\"delete\" src=\"/assets/delete.png\" onclick=\"deleteVote("+num+",this,"+numrow+");\" align=\"right\"></img></td></tr></div>";
+						table = table + "<div id=\"del"+numrow+"\" style=\"display: block\"><tr id=\"del"+numrow+"\" class=\""+result+"\"><td>"+num+"</td><td><b>"+vote+"</b></td><td>"+ipadd+"<img src=\"/assets/images/"+Imgc+".png\" title=\""+countryname+"\" align=\"right\"></img></td><td>"+df_tab.format(date)+"<img class=\"delete\" src=\"/assets/delete.png\" onclick=\"deleteVote("+num+",this,"+numrow+");\" align=\"right\"></img></td></tr></div>";
 						numrow++;
 						}
 					}
