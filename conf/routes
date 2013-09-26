@@ -6,8 +6,8 @@
 GET     /                           controllers.Application.index()
 
 # Vote
-GET    /postVote/:vote        		controllers.Application.postVote(vote: String)
-GET	   /Votes						controllers.Application.Votes()
+POST    /feedback        			controllers.Application.postVote()
+GET	    /Votes						controllers.Application.Votes()
 DELETE /deleteVote/:id				controllers.Application.deleteVote(id: String)
 
 # Login

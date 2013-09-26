@@ -23,6 +23,7 @@ import models.*;
 import java.text.DateFormat;
 
 import net.firefang.ip2c.*;
+import org.codehaus.jackson.JsonNode;
 
 public class Application extends Controller {
   
@@ -35,7 +36,6 @@ public class Application extends Controller {
 	
     public static Result index() {
 		return redirect(routes.Application.login());
-        //return ok(index.render("API is ready"));
     }
     
     public static Result login() {
@@ -64,40 +64,51 @@ public class Application extends Controller {
 		}
 	}
 
-    public static Result postVote(String vote) {
+    public static Result postVote() {
     	
-		String remote = request().remoteAddress();
-		if (remote.contains(":"))
-			remote = "127.0.0.1";
-		Connection conn = play.db.DB.getConnection();
-		String timeStamp = new SimpleDateFormat("HH:mm:ss yyyy/MM/dd").format(Calendar.getInstance().getTime());
-		if (vote.matches("\\d+"))
-		{
-		int voteclean = Integer.parseInt(vote);
-			if (voteclean <= 10) 
-			{
-			try {
-				Statement stat = conn.createStatement();
-				stat.executeUpdate("INSERT INTO Votes VALUES (DEFAULT, "+voteclean+", '"+remote+"', '"+timeStamp+"')");
-			    conn.close();
-			} catch (SQLException e)
-			{
-				e.printStackTrace();
-				
-			} finally {
-						return ok("! DEBUG ! => Your vote is " + vote + "! Your IP is " + remote);
-					  }
-			}
-			else
-			{
-				//400: Bad request
-			return badRequest("Vote must be between 1 and 10");
-			}
-		}
-		else
-		{
-			return badRequest("Invalid vote!");
-		}
+    	int vote;
+    	String par_a, par_b, par_c;
+    	JsonNode json = request().body().asJson();
+    	  if(json == null) {
+    	    return badRequest("Expecting Json data");
+    	  } else {
+    		//JSON TREE -> TOBEDEFINED
+    	    vote = json.findPath("vote").getIntValue();
+    	    par_a = json.findPath("par_a").getTextValue();
+    	    par_b = json.findPath("par_b").getTextValue();
+    	    par_c = json.findPath("par_c").getTextValue();
+    	    
+    	    if(par_a == null || par_b == null || par_c == null) {
+    	      return badRequest("Missing parameters");
+    	    } else {
+    	    	String remote = request().remoteAddress();
+    			if (remote.contains(":"))
+    				remote = "127.0.0.1";
+    			Connection conn = play.db.DB.getConnection();
+    			String timeStamp = new SimpleDateFormat("HH:mm:ss yyyy/MM/dd").format(Calendar.getInstance().getTime());
+
+    			
+    				if (vote <= 5 && vote >= 1) 
+    				{
+    				try {
+    					Statement stat = conn.createStatement();
+    					stat.executeUpdate("INSERT INTO Votes VALUES (DEFAULT, "+vote+", '"+remote+"', '"+timeStamp+"','"+par_a+"','"+par_b+"','"+par_c+"')");
+    				    conn.close();
+    				} catch (SQLException e)
+    				{
+    					e.printStackTrace();
+    					
+    				} finally {
+    							return ok();
+    						  }
+    				}
+    				else
+    				{
+    					//400: Bad request
+    				return badRequest("Vote must be between 1 and 5");
+    				}
+    	    }
+    	  }
 		
 }
 
@@ -170,7 +181,7 @@ public class Application extends Controller {
                   String ipadd = "";
                   String table = "";
                   String result = "";
-                  double[] percentvoti = new double[10];
+                  double[] percentvoti = new double[5];
                   percentages = "";
                   String time = "";
                   Jstable = "";
@@ -206,9 +217,9 @@ public class Application extends Controller {
 							table = ".. Something went wrong! :(";
 							break;
 						} finally {
-					    if (vote >= 7)
+					    if (vote >= 4)
 							result="success";
-						else if (vote < 7 && vote >= 4)
+						else if (vote == 3)
 							result="";
 						else
 							result="danger";
@@ -269,7 +280,7 @@ public class Application extends Controller {
                   int mean = (int)Math.round((((double) sum) / listed.size()));
   				table = table + "<br/></tbody></table><table class=\"table table-striped table-bordered table-hover\" id=\"meantable\"><tr class=\"warning\"><td><p id=\"meanp\"><b>~ Overall mean</b></p></td><td><p id=\"meanp2\">"+mean+"</p></td><td>-</td><td>-</td></tr></table>";
 				double size = listed.size();
-  				for (int i = 10; i > 0; i--)
+  				for (int i = 5; i > 0; i--)
 				{
 					int perc = 0;
 					perc = Math.round((float)((percentvoti[i-1]/size)*100));

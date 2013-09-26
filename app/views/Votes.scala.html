@@ -22,33 +22,23 @@
 		  $('#tab-container').easytabs();
 		  $('#TableVote').tablePagination(options);
 		  $("#search").on("keyup", function() {
-					var value = $(this).val();
-					options = {
+					//var value = $(this).val();
+					var value = this.value;
+
+					
+					$("#TableVote tbody").find("tr").each(function(index) {
+						if (index === 0) return;
+						var id = $(this).find("td:eq(3)").text();
+						$(this).toggle(id.indexOf(value) !== -1);
+					});
+			});
+		  		options = {
 					  rowsPerPage : 9999,
 					  firstArrow : (new Image()).src="@{routes.Assets.at("images/first.gif")}",
 					  prevArrow : (new Image()).src="@{routes.Assets.at("images/prev.gif")}",
 					  lastArrow : (new Image()).src="@{routes.Assets.at("images/last.gif")}",
 					  nextArrow : (new Image()).src="@{routes.Assets.at("images/next.gif")}"
-					}
-					
-					$("#TableVote tbody tr").each(function(index) {
-						if (index !== 0) {
-
-							$row = $(this);
-
-							var id = $row.find("td:eq(3)").text();
-
-							if (id.indexOf(value) !== 0) {
-								$row.hide();
-							}
-							else {
-								$row.show();
-							}
-						}
-					});
-					$('#TableVote').tablePagination(options);
-				});
-		  
+					}		  
 		   });
 	</script>
         <script>
@@ -270,7 +260,7 @@
             chart1.getAnimations().getLoad().setEnabled(true);
             chart1.getData().setSeries(1);
             chart1.getAxisY().setMin(1);
-            chart1.getAxisY().setMax(10);
+            chart1.getAxisY().setMax(5);
             chart1.getAxisY().setStep(1);
             var data = chart1.getData();
 			data.setSeries(1);
@@ -296,6 +286,7 @@
             var divHolder = document.getElementById('ChartDiv');
 			chart1.create(divHolder);
 			
+
 		            
       }
       
@@ -319,7 +310,8 @@
 			@Html(percg)
 			chart2.getAnimations().getLoad().setEnabled(true);
 			datap.setSeries(1);
-			datap.setPoints(10);
+			datap.setPoints(5);
+			//TO DEFINE
 			chart2.getAllSeries().getPointLabels().setVisible(true);
 			//chart2.getLegendBox().setVisible(false);
 			chart2.getLegendBox().setVisible(false);
@@ -355,7 +347,7 @@
 							<th scope="col">#</th>
 							<th scope="col">Vote</th>
 							<th scope="col">IP</th>
-							<th scope="col">Time <input type="text" id="search" placeholder="Search exact date" style="font-size: 15px; float: right;padding: 0;border: 0;margin: 0;border-radius: 4px;"></input></th>
+							<th scope="col">Time <input type="text" id="search" title="Start to type.. ex.(2013/09/23 16:..)" placeholder="Search exact date" onclick="$('#TableVote').tablePagination(options);" style="font-size: 15px; float: right;padding: 0;border: 0;margin: 0;border-radius: 4px;font-style: italic;"></input></th>
 						  </tr>
 						</thead>
 						<tbody>
