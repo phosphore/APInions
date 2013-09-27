@@ -11,6 +11,7 @@ POST    /feedback        			controllers.Application.postVote()
 #Pages
 GET	    /Votes						controllers.Application.Votes()
 GET		/dashboard					controllers.Application.dashboard()
+GET		/requests					controllers.Application.requests()
 DELETE /deleteVote/:id				controllers.Application.deleteVote(id: String)
 
 # Login

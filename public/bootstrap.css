@@ -5819,6 +5819,7 @@ a.list-group-item:focus {
   color: #333333;
   background-color: #f5f5f5;
   border-color: #dddddd;
+  cursor: pointer;
 }
 
 .panel-default > .panel-heading + .panel-collapse .panel-body {

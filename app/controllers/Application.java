@@ -123,7 +123,6 @@ public class Application extends Controller {
 
 @Security.Authenticated(Secured.class)
 	public static Result deleteVote(String id) {
-		
 		Connection conn = play.db.DB.getConnection();
 		if (id.matches("\\d+"))
 		{
@@ -147,6 +146,12 @@ public class Application extends Controller {
 			}
 	
 }
+
+@Security.Authenticated(Secured.class)
+	public static Result requests() {
+		return ok(feedback.render());
+	}
+
 	
 @Security.Authenticated(Secured.class)
 	public static Result Votes() {
