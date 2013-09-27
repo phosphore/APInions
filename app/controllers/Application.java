@@ -35,7 +35,8 @@ public class Application extends Controller {
 	public static int totalvotetab;
 	public static String perchart;
 	public static String perchartend;
-	
+	public static String[] questions;
+	public static String[] par;
 
 	
     public static Result index() {
@@ -73,22 +74,27 @@ public class Application extends Controller {
 		}
 	}
 
+	//FEEDBACK /feedback JSON POST
     public static Result postVote() {
     	
     	int vote;
-    	String par_a, par_b, par_c;
+    	String par_a, par_b, par_c, par_d, par_e, par_f, par_g;
     	JsonNode json = request().body().asJson();
     	  if(json == null) {
     	    return badRequest("Expecting Json data");
     	  } else {
     		//JSON TREE -> TOBEDEFINED
     	    vote = json.findPath("vote").getIntValue();
-    	    par_a = json.findPath("par_a").getTextValue();
-    	    par_b = json.findPath("par_b").getTextValue();
-    	    par_c = json.findPath("par_c").getTextValue();
+    	    par_a = json.findPath("answ_a").getTextValue();
+    	    par_b = json.findPath("answ_b").getTextValue();
+    	    par_c = json.findPath("answ_c").getTextValue();
+    	    par_d = json.findPath("answ_d").getTextValue();
+    	    par_e = json.findPath("answ_e").getTextValue();
+    	    par_f = json.findPath("answ_f").getTextValue();
+    	    par_g = json.findPath("answ_g").getTextValue();
     	    
-    	    if(par_a == null || par_b == null || par_c == null) {
-    	      return badRequest("Missing parameters");
+    	    if(vote == 0 || par_a == null || par_b == null) {
+    	      return badRequest("Missing parameters/Not recognized tree");
     	    } else {
     	    	String remote = request().remoteAddress();
     			if (remote.contains(":"))
@@ -101,7 +107,34 @@ public class Application extends Controller {
     				{
     				try {
     					Statement stat = conn.createStatement();
-    					stat.executeUpdate("INSERT INTO Votes VALUES (DEFAULT, "+vote+", '"+remote+"', '"+timeStamp+"','"+par_a+"','"+par_b+"','"+par_c+"')");
+    					String queryconcat = "INSERT INTO Votes VALUES (DEFAULT, "+vote+", '"+remote+"', '"+timeStamp+"','"+par_a+"','"+par_b+"'";
+    					if (par_c != null)
+    					{
+    						queryconcat += ",'"+par_c+"'";
+    						if (par_d != null)
+    						{
+    							queryconcat += ",'"+par_d+"'";
+        						if (par_e != null)
+        						{
+        							queryconcat += ",'"+par_e+"'";
+            						if (par_f != null)
+            						{
+            							queryconcat += ",'"+par_f+"'";
+                						if (par_g != null)
+                						{
+                							queryconcat += ",'"+par_g+"'";
+                						} else 
+                						queryconcat +=", null";
+            						} else
+            							queryconcat +=", null, null";
+        						} else
+        							queryconcat +=", null, null, null";
+    						} else
+    							queryconcat +=", null, null, null, null";
+    					} else
+    						queryconcat +=", null, null, null, null, null";
+    					queryconcat += ")";
+    					stat.executeUpdate(queryconcat);
     				    conn.close();
     				} catch (SQLException e)
     				{
@@ -151,7 +184,7 @@ public class Application extends Controller {
 @Security.Authenticated(Secured.class)
 	public static Result requests() {
 	//TO MODIFY IF PAR_XYZ ARE ADDED
-	String[] row = new String[7];
+	String[] row = new String[11];
 	
 	List<String[]> listed = new ArrayList<String[]>();
 	Connection conn = play.db.DB.getConnection();
@@ -169,6 +202,10 @@ public class Application extends Controller {
 				row[4] = rs.getString("par_a");
 				row[5] = rs.getString("par_b");
 				row[6] = rs.getString("par_c");
+				row[7] = rs.getString("par_d");
+				row[8] = rs.getString("par_e");
+				row[9] = rs.getString("par_f");
+				row[10] = rs.getString("par_g");
 				String[] tmp = row.clone();
 				listed.add(tmp);
 			}
@@ -237,6 +274,37 @@ public class Application extends Controller {
 			return ok(dashboard.render());
 	}
 
+	public static void getquestions()
+	{
+		Connection conn = play.db.DB.getConnection();
+		questions = new String[7];
+		    try {
+				ResultSet rs;
+				Statement stat = conn.createStatement();
+				rs = stat.executeQuery("SELECT * FROM questions");
+				while (rs.next()) {
+					questions[0] = rs.getString("QuestionA");
+					questions[1] = rs.getString("QuestionB");
+					questions[2] = rs.getString("QuestionC");
+					questions[3] = rs.getString("QuestionD");
+					questions[4] = rs.getString("QuestionE");
+					questions[5] = rs.getString("QuestionF");
+					questions[6] = rs.getString("QuestionG");
+				}
+			    conn.close();
+				}
+			catch (SQLException e)
+				{
+					e.printStackTrace();
+				}
+			
+			
+				
+	}
+		
+		
+		
+	
 	
 	
 	
@@ -261,15 +329,11 @@ public class Application extends Controller {
 		  today = sdf.format(date);
        
         
-        //IMPORTANT VARS TO MODIFY IF PAR_XYZ ARE ADDED
-       String par_a = "";
-       String par_b = "";
-       String par_c = "";
+       
        
        //QUESTIONS
-       String qone = "QUESTION ONE";
-       String qtwo = "QUESTION TWO";
-       String qthree = "QUESTION THREE";
+       
+       getquestions();
  
         if (listed.size() == 0)
         {
@@ -281,9 +345,9 @@ public class Application extends Controller {
 				//TO MODIFY IF PAR_XYZ ARE ADDED
 				vote = Integer.parseInt(listed.get(i)[0]);
 				num = Integer.parseInt(listed.get(i)[3]);
-				par_a = listed.get(i)[4];
-				par_b = listed.get(i)[5];
-				par_c = listed.get(i)[6];
+
+					
+				
 				} catch (Exception ex)
 				{
 					table = ".. Something went wrong! :(";
@@ -328,8 +392,16 @@ public class Application extends Controller {
 				{
 				ex.printStackTrace();
 				} finally {
-					table = table + "<div class=\"panel panel-primary\"> <div class=\"panel-heading\" id=\"toggler-slide"+num+"\"><h3 class=\"panel-title\"><span class=\"expandSlider\">"+num+" · [+] Survey from "+ipadd+" <div style=\"float:right\"  align=\"right\"><img src=\"/assets/images/"+Imgc+".png\" style=\"padding-right: 10px;\" title=\""+countryname+"\"></img>"+df_tab.format(date)+"</div></span></h3><h3 class=\"panel-title\"><span class=\"collapseSlider\">"+num+" · [–] Survey from "+ipadd+" <div style=\"float:right\" align=\"right\"><img src=\"/assets/images/"+Imgc+".png\" style=\"padding-right: 10px;\" title=\""+countryname+"\"></img>"+df_tab.format(date)+"</div></span></h3></div><div class=\"panel-body\" id=\"slide"+num+"\"> <div class=\"panel panel-default\">  <div class=\"panel-headingsub\">"+qone+"</div> <div class=\"panel-bodysub\">"+par_a+"</div></div> <div class=\"panel panel-default\">  <div class=\"panel-headingsub\">"+qtwo+"</div> <div class=\"panel-bodysub\">"+par_b+"</div></div> <div class=\"panel panel-default\">  <div class=\"panel-headingsub\">"+qthree+"</div> <div class=\"panel-bodysub\">"+par_c+"</div></div></div></div>";
-				
+					table = table + "<div class=\"panel panel-primary\"> <div class=\"panel-heading\" id=\"toggler-slide"+num+"\"><h3 class=\"panel-title\"><span class=\"expandSlider\">"+num+" · [+] Survey from "+ipadd+" <div style=\"float:right\"  align=\"right\"><img src=\"/assets/images/"+Imgc+".png\" style=\"padding-right: 10px;\" title=\""+countryname+"\"></img>"+df_tab.format(date)+"</div></span></h3><h3 class=\"panel-title\"><span class=\"collapseSlider\">"+num+" · [–] Survey from "+ipadd+" <div style=\"float:right\" align=\"right\"><img src=\"/assets/images/"+Imgc+".png\" style=\"padding-right: 10px;\" title=\""+countryname+"\"></img>"+df_tab.format(date)+"</div></span></h3></div><div class=\"panel-body\" id=\"slide"+num+"\">";
+					for (int j = 0; j < 7; j++)
+					{
+						if ((questions[j] != "")&&(questions[j] != null))
+						{
+							if (listed.get(i)[4+j] != null)
+								table = table + " <div class=\"panel panel-default\"><div class=\"panel-headingsub\">"+questions[j]+"</div> <div class=\"panel-bodysub\">"+listed.get(i)[4+j]+"</div></div>"; 
+						}
+					}
+					table = table + "</div></div>";
 				}
 			}
 			
