@@ -1,4 +1,4 @@
-@(feedlist: String)
+@(feedlist: String)(rft: String)
 	<html lang="en"><head>
     <title>Feedback</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -117,7 +117,7 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main"> 
 		<ul class="nav navbar-nav navbar-right">
-			<li><p style="color: white;">Hello, @{session().get("email")}&nbsp;&nbsp;</p></li>
+			<li><p style="color: white;">Hello, @{session().get("email")}&nbsp;&nbsp;<a style="cursor:help;" href=""><span class="badge" title="Requests for today">@Html(rft)</span>&nbsp;</a></p></li>
             <li><a href="@routes.Application.logout()"><img alt="Logout" title="Logout" src="@routes.Assets.at("logout.png")"></a></li>
           </ul>
        </div>
@@ -168,6 +168,9 @@
         
               </div>
             </div>
+            
+            
+					 <div class="panel panel-primary"> <div class="panel-heading" id="toggler-slide1"> <h3 class="panel-title"><span class="expandSlider">[+] Request 1</span></h3><h3 class="panel-title"><span class="collapseSlider">[-] Collapse Request 1</span></h3> </div> <div class="panel-body" id="slide1"> <div class="panel panel-default"> <div class="panel-headingsub">Question 1</div> <div class="panel-bodysub"> Answer 1 </div> </div>  </div> </div>
          -->
      <!-- BEGIN FEEDBACK -->
 				@Html(feedlist)

@@ -147,10 +147,52 @@ public class Application extends Controller {
 	
 }
 
+//FEEDBACK
 @Security.Authenticated(Secured.class)
 	public static Result requests() {
-		return ok(feedback.render());
-	}
+	//TO MODIFY IF PAR_XYZ ARE ADDED
+	String[] row = new String[7];
+	
+	List<String[]> listed = new ArrayList<String[]>();
+	Connection conn = play.db.DB.getConnection();
+	String tablecontent = "";
+	    try {
+			ResultSet rs;
+			Statement stat = conn.createStatement();
+			rs = stat.executeQuery("SELECT * FROM Votes");
+			while (rs.next()) {
+				row[0] = rs.getString("Vote");
+				row[1] = rs.getString("IP");
+				row[2] = rs.getString("Time");
+				row[3] = rs.getString("ID");
+				//TO MODIFY IF PAR_XYZ ARE ADDED
+				row[4] = rs.getString("par_a");
+				row[5] = rs.getString("par_b");
+				row[6] = rs.getString("par_c");
+				String[] tmp = row.clone();
+				listed.add(tmp);
+			}
+		    conn.close();
+			}
+		catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		finally 
+			{
+				//tablecontent = tabber(listed);
+				//return ok(Votes.render(tablecontent, Jstable, percentages, Integer.toString(rft), perchart, Integer.toString(totalvotetab)));
+			   return ok(feedback.render(feedtabber(listed),Integer.toString(rft)));
+			}
+
+
+}
+	
+	
+	
+	
+	
+	
 
 	
 @Security.Authenticated(Secured.class)
@@ -195,6 +237,116 @@ public class Application extends Controller {
 			return ok(dashboard.render());
 	}
 
+	
+	
+	
+	
+	public static String feedtabber(List<String[]> listed)
+	{
+		rft = 0;
+        int num = 0;
+        String ipadd = "";
+        String table = "";
+        String time = "";
+        String countryname = "";
+        String today = "";
+        int vote = 0;
+        perchart = "";
+        perchartend = "";
+        Imgc = "";
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss yyyy/MM/dd");
+        DateFormat df_tab = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		  Date date = new Date();
+		  today = sdf.format(date);
+       
+        
+        //IMPORTANT VARS TO MODIFY IF PAR_XYZ ARE ADDED
+       String par_a = "";
+       String par_b = "";
+       String par_c = "";
+       
+       //QUESTIONS
+       String qone = "QUESTION ONE";
+       String qtwo = "QUESTION TWO";
+       String qthree = "QUESTION THREE";
+ 
+        if (listed.size() == 0)
+        {
+			  table = "<tr class=\"warning\"><td><i>No requests yet!</i></td><td>-</td><td>-</td><td>-</td></tr>";
+		  } else {
+        for (int i = 0; i < listed.size();i++)
+        {
+				try {
+				//TO MODIFY IF PAR_XYZ ARE ADDED
+				vote = Integer.parseInt(listed.get(i)[0]);
+				num = Integer.parseInt(listed.get(i)[3]);
+				par_a = listed.get(i)[4];
+				par_b = listed.get(i)[5];
+				par_c = listed.get(i)[6];
+				} catch (Exception ex)
+				{
+					table = ".. Something went wrong! :(";
+					break;
+				} finally {
+				ipadd=listed.get(i)[1];
+				time=listed.get(i)[2];
+				try {
+				date = df.parse(time);
+				
+				} catch (Exception ex)
+				{
+					ex.printStackTrace();
+				} finally {
+					if (today.equals(sdf.format(date)))
+						rft++;
+					
+					
+					
+					
+				int caching2 = IP2Country.MEMORY_MAPPED;
+				try{
+				IP2Country ip2c = new IP2Country("ip2c/ip-to-country.bin",caching2);
+				Country c = ip2c.getCountry(ipadd);
+
+					if (c != null)
+					{
+						countryname = c.getName();
+					} else 
+						Imgc = "UNKNOWN";
+					if (countryname == "" || c == null)
+					{
+						Imgc = "UNKNOWN";	
+					}
+					else
+					{		
+						Imgc = c.get2cStr().toLowerCase();	
+					}
+				
+					
+				} catch (Exception ex)
+				{
+				ex.printStackTrace();
+				} finally {
+					table = table + "<div class=\"panel panel-primary\"> <div class=\"panel-heading\" id=\"toggler-slide"+num+"\"><h3 class=\"panel-title\"><span class=\"expandSlider\">"+num+" · [+] Survey from "+ipadd+" <div style=\"float:right\"  align=\"right\"><img src=\"/assets/images/"+Imgc+".png\" style=\"padding-right: 10px;\" title=\""+countryname+"\"></img>"+df_tab.format(date)+"</div></span></h3><h3 class=\"panel-title\"><span class=\"collapseSlider\">"+num+" · [–] Survey from "+ipadd+" <div style=\"float:right\" align=\"right\"><img src=\"/assets/images/"+Imgc+".png\" style=\"padding-right: 10px;\" title=\""+countryname+"\"></img>"+df_tab.format(date)+"</div></span></h3></div><div class=\"panel-body\" id=\"slide"+num+"\"> <div class=\"panel panel-default\">  <div class=\"panel-headingsub\">"+qone+"</div> <div class=\"panel-bodysub\">"+par_a+"</div></div> <div class=\"panel panel-default\">  <div class=\"panel-headingsub\">"+qtwo+"</div> <div class=\"panel-bodysub\">"+par_b+"</div></div> <div class=\"panel panel-default\">  <div class=\"panel-headingsub\">"+qthree+"</div> <div class=\"panel-bodysub\">"+par_c+"</div></div></div></div>";
+				
+				}
+			}
+			
+			
+		}
+		
+	}
+       
+        
+}
+        return table;
+		
+	}
+	
+	
+	
+	
 
 	public static String tabber(List<String[]> listed) {
 				  rft = 0;
