@@ -1,5 +1,5 @@
-<html lang="en"><head>
-    <title>Dashboard</title>
+	<html lang="en"><head>
+    <title>Edit questions</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" href="@routes.Assets.at("bootstrap.css")" media="screen">
@@ -7,7 +7,18 @@
     <link rel="shortcut icon" href="@{routes.Assets.at("favicon.ico")}" />
     <link rel="stylesheet" type="text/css" href="@{routes.Assets.at("stylesheets/jQueryUI/flick.css")}" />
     <script src="@{routes.Assets.at("javascripts/jquery-1.8.3.min.js")}"></script>
-		
+		<script type="text/javascript">
+					function toggleSlides(){
+				 $('.panel-heading').click(function(e){
+					 
+					var id=$(this).attr('id');
+					var widgetId=id.substring(id.indexOf('-')+1,id.length);
+					
+					$('#'+widgetId).slideToggle();
+					$(this).toggleClass('sliderExpanded');
+				});
+			};	
+		</script>
     <style type="text/css">
 
 		@@keyframes animatedBackground {
@@ -46,6 +57,39 @@
 			text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
 			text-color: #ffffff;
 		}
+		
+    
+    </style>
+    <style>
+    .panel-body{
+	display:none;
+	}
+	.collapseSlider{
+		display:none;
+	}
+	.sliderExpanded .collapseSlider{
+		display:block;
+	}
+	.sliderExpanded .expandSlider{
+		display:none;
+	}
+	
+	.panel-headingsub
+	{
+		color: #333333;
+		background-color: #f5f5f5;
+		border-color: #dddddd;
+		padding: 10px 15px;
+		border-bottom: 1px solid transparent;
+		border-top-right-radius: 3px;
+		border-top-left-radius: 3px;
+		
+	}
+	.panel-bodysub {
+		
+		padding: 15px;
+	}
+    
     
     </style>
     
@@ -57,7 +101,7 @@
     <![endif]-->
     
   </head>
-  <body>
+  <body onLoad="toggleSlides()">
     
 
     <div class="navbar navbar-default navbar-fixed-top">
@@ -87,7 +131,7 @@
       </div>
 
       
-      
+      <script>alert("TODO");</script>
 
 
       
@@ -96,43 +140,8 @@
 		
       <div class="bs-docs-section">
 
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="page-header">
-              <h1 id="container" style="
-				font-size: 4em;
-				color: #317EAC;
-				text-shadow: 2px 1px whitesmoke;
-			">Dashboard</h1>
-            </div>
-            <ul class="breadcrumb">
-  <li class="active">Dashboard</li>
-                
-              </ul>
-     
-              <div class="jumbotron">
-                
-                <img alt="Votes" title="Go to votes" style="float: left;" src="@routes.Assets.at("images/vote.png")"><p>Browse votes and statistics.<a href="@routes.Application.Votes()" class="btn btn-primary btn-lg" style="
-    float: right;
-">Go to votes</a></p>
-                
-              </div>
-              
-              <div class="jumbotron">
-                
-                <img alt="Comments" title="Go to comments" style="float: left; margin-right: 19px;" src="@routes.Assets.at("images/comments.png")"><p>Browse comments.<a href="@routes.Application.requests()" class="btn btn-primary btn-lg" style="
-    float: right;
-">Go to comments</a></p>
-                
-              </div>
-              
-                            <div class="jumbotron">
-                
-                <img alt="Edit Questions" title="Edit displayed questions" style="float: left; margin-right: 19px;" src="@routes.Assets.at("images/editq.png")"><p>Edit questions.<a href="@routes.Application.editq()" class="btn btn-primary btn-lg" style="
-    float: right;
-">Edit displayed questions</a></p>
-                
-              </div>
+</div>
+            
 
       <footer>
         <div class="row">

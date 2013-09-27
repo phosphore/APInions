@@ -153,6 +153,16 @@ public class Application extends Controller {
     	  }
 		
 }
+    @Security.Authenticated(Secured.class)
+    public static Result editq()
+    {
+    	
+    	return ok(editq.render());
+    }
+    
+    
+    
+    
 
 @Security.Authenticated(Secured.class)
 	public static Result deleteVote(String id) {
