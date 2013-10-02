@@ -7,6 +7,18 @@
     <link rel="shortcut icon" href="@{routes.Assets.at("favicon.ico")}" />
     <link rel="stylesheet" type="text/css" href="@{routes.Assets.at("stylesheets/jQueryUI/flick.css")}" />
     <script src="@{routes.Assets.at("javascripts/jquery-1.8.3.min.js")}"></script>
+		<script type="text/javascript">
+					function toggleSlides(){
+				 $('.panel-heading').click(function(e){
+					 
+					var id=$(this).attr('id');
+					var widgetId=id.substring(id.indexOf('-')+1,id.length);
+					
+					$('#'+widgetId).slideToggle();
+					$(this).toggleClass('sliderExpanded');
+				});
+			};	
+		</script>
     <style type="text/css">
 
 		@@keyframes animatedBackground {
@@ -48,6 +60,38 @@
 		
     
     </style>
+    <style>
+    .panel-body{
+	display:none;
+	}
+	.collapseSlider{
+		display:none;
+	}
+	.sliderExpanded .collapseSlider{
+		display:block;
+	}
+	.sliderExpanded .expandSlider{
+		display:none;
+	}
+	
+	.panel-headingsub
+	{
+		color: #333333;
+		background-color: #f5f5f5;
+		border-color: #dddddd;
+		padding: 10px 15px;
+		border-bottom: 1px solid transparent;
+		border-top-right-radius: 3px;
+		border-top-left-radius: 3px;
+		
+	}
+	.panel-bodysub {
+		
+		padding: 15px;
+	}
+    
+    
+    </style>
     
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -55,9 +99,9 @@
       <script src="@routes.Assets.at("html5shiv.js")"></script>
       <script src="@routes.Assets.at("respond.min.js")"></script>
     <![endif]-->
-  </head>
     
-  <body>
+  </head>
+  <body onLoad="toggleSlides()">
     
 
     <div class="navbar navbar-default navbar-fixed-top">
@@ -87,7 +131,7 @@
       </div>
 
       
-      
+      <script>alert("TODO");</script>
 
 
       
@@ -96,24 +140,7 @@
 		
       <div class="bs-docs-section">
 
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="page-header">
-              <h1 id="container">Edit questions</h1>
-            </div>
-            <ul class="breadcrumb">
-  <li><a href="dashboard">Dashboard</a></li>
-  <li class="active">Edit questions</li>
-                
-              </ul>
-              <form class="bs-example">
-              <div class="form-group">
-                  <label class="control-label" for="inputLarge">First question</label>
-                  <input class="form-control input-lg" type="text" id="inputLarge">
-                </div>
-              
-              </form>
-
+</div>
             
 
       <footer>

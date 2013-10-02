@@ -1,5 +1,6 @@
+@(feedlist: String)(rft: String)
 	<html lang="en"><head>
-    <title>Edit questions</title>
+    <title>Feedback</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" href="@routes.Assets.at("bootstrap.css")" media="screen">
@@ -7,6 +8,18 @@
     <link rel="shortcut icon" href="@{routes.Assets.at("favicon.ico")}" />
     <link rel="stylesheet" type="text/css" href="@{routes.Assets.at("stylesheets/jQueryUI/flick.css")}" />
     <script src="@{routes.Assets.at("javascripts/jquery-1.8.3.min.js")}"></script>
+		<script type="text/javascript">
+					function toggleSlides(){
+				 $('.panel-heading').click(function(e){
+					 
+					var id=$(this).attr('id');
+					var widgetId=id.substring(id.indexOf('-')+1,id.length);
+					
+					$('#'+widgetId).slideToggle();
+					$(this).toggleClass('sliderExpanded');
+				});
+			};	
+		</script>
     <style type="text/css">
 
 		@@keyframes animatedBackground {
@@ -48,6 +61,38 @@
 		
     
     </style>
+    <style>
+    .panel-body{
+	display:none;
+	}
+	.collapseSlider{
+		display:none;
+	}
+	.sliderExpanded .collapseSlider{
+		display:block;
+	}
+	.sliderExpanded .expandSlider{
+		display:none;
+	}
+	
+	.panel-headingsub
+	{
+		color: #333333;
+		background-color: #f5f5f5;
+		border-color: #dddddd;
+		padding: 10px 15px;
+		border-bottom: 1px solid transparent;
+		border-top-right-radius: 3px;
+		border-top-left-radius: 3px;
+		
+	}
+	.panel-bodysub {
+		
+		padding: 15px;
+	}
+    
+    
+    </style>
     
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -55,9 +100,9 @@
       <script src="@routes.Assets.at("html5shiv.js")"></script>
       <script src="@routes.Assets.at("respond.min.js")"></script>
     <![endif]-->
-  </head>
     
-  <body>
+  </head>
+  <body onLoad="toggleSlides()">
     
 
     <div class="navbar navbar-default navbar-fixed-top">
@@ -72,7 +117,7 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main"> 
 		<ul class="nav navbar-nav navbar-right">
-			<li><p style="color: white;">Hello, @{session().get("email")}&nbsp;&nbsp;</p></li>
+			<li><p style="color: white;">Hello, @{session().get("email")}&nbsp;&nbsp;<a style="cursor:help;" href=""><span class="badge" title="Requests for today">@Html(rft)</span>&nbsp;</a></p></li>
             <li><a href="@routes.Application.logout()"><img alt="Logout" title="Logout" src="@routes.Assets.at("logout.png")"></a></li>
           </ul>
        </div>
@@ -99,21 +144,36 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="page-header">
-              <h1 id="container">Edit questions</h1>
+              <h1 id="container">Feedback</h1>
             </div>
             <ul class="breadcrumb">
   <li><a href="dashboard">Dashboard</a></li>
-  <li class="active">Edit questions</li>
+  <li class="active">Feedback</li>
                 
               </ul>
-              <form class="bs-example">
-              <div class="form-group">
-                  <label class="control-label" for="inputLarge">First question</label>
-                  <input class="form-control input-lg" type="text" id="inputLarge">
-                </div>
               
-              </form>
-
+         <!--SAMPLE
+         
+         <div class="panel panel-primary">
+              <div class="panel-heading" id="toggler-slide1">
+                <h3 class="panel-title"><span class="expandSlider">[+] Request 1</span></h3><h3 class="panel-title"><span class="collapseSlider">[-] Collapse Request 1</span></h3>
+              </div>
+              <div class="panel-body" id="slide1">
+					 <div class="panel panel-default">
+					  <div class="panel-headingsub">Question 1</div>
+					  <div class="panel-bodysub">
+						  Answer 1
+					  </div>
+					</div>
+        
+              </div>
+            </div>
+            
+            
+					 <div class="panel panel-primary"> <div class="panel-heading" id="toggler-slide1"> <h3 class="panel-title"><span class="expandSlider">[+] Request 1</span></h3><h3 class="panel-title"><span class="collapseSlider">[-] Collapse Request 1</span></h3> </div> <div class="panel-body" id="slide1"> <div class="panel panel-default"> <div class="panel-headingsub">Question 1</div> <div class="panel-bodysub"> Answer 1 </div> </div>  </div> </div>
+         -->
+     <!-- BEGIN FEEDBACK -->
+				@Html(feedlist)
             
 
       <footer>

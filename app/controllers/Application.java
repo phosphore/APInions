@@ -347,7 +347,7 @@ public class Application extends Controller {
  
         if (listed.size() == 0)
         {
-			  table = "<tr class=\"warning\"><td><i>No requests yet!</i></td><td>-</td><td>-</td><td>-</td></tr>";
+			  table = "<table class=\"table table-striped table-bordered table-hover\"><tbody> <tr class=\"warning\"><td><i>No requests yet!</i></td><td>-</td><td>-</td><td>-</td></tr></tbody></table>";
 		  } else {
         for (int i = 0; i < listed.size();i++)
         {
