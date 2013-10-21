@@ -14,6 +14,7 @@ GET		/dashboard					controllers.Application.dashboard()
 GET		/requests					controllers.Application.requests()
 GET		/editq						controllers.Application.editq()
 DELETE /deleteVote/:id				controllers.Application.deleteVote(id: String)
+POST   /editq						controllers.Application.editqpost()
 
 # Login
 GET     /login                  	controllers.Application.login()

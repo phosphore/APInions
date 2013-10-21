@@ -1,3 +1,4 @@
+@(questions: Array[String])
 	<html lang="en"><head>
     <title>Edit questions</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,22 @@
     <link rel="shortcut icon" href="@{routes.Assets.at("favicon.ico")}" />
     <link rel="stylesheet" type="text/css" href="@{routes.Assets.at("stylesheets/jQueryUI/flick.css")}" />
     <script src="@{routes.Assets.at("javascripts/jquery-1.8.3.min.js")}"></script>
+    <script language="Javascript">
+		function postquestions() {
+			var datastring = $("#questionsform").serialize();
+			xmlhttp=new XMLHttpRequest();
+			xmlhttp.open('POST','../editq',true);
+			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+			xmlhttp.send(datastring);
+			toast();
+		}
+    </script>
+        <script>
+		function toast() {
+		$('#toast').fadeIn(400).delay(3000).fadeOut(400); //fade out after 3 seconds
+		}
+    
+    </script>
     <style type="text/css">
 
 		@@keyframes animatedBackground {
@@ -106,16 +123,43 @@
   <li class="active">Edit questions</li>
                 
               </ul>
-              <form class="bs-example">
+              <form class="bs-example" action="@routes.Application.editq()" method="post" id="questionsform">
               <div class="form-group">
+				  <!-- It would be better using http://www.playframework.com/documentation/2.0/JavaForms but i have not much time, even if it would be easier :P -->
                   <label class="control-label" for="inputLarge">First question</label>
-                  <input class="form-control input-lg" type="text" id="inputLarge">
+                  <input class="form-control input-lg" type="text" id="inputLarge" name="q1" value="@Html(questions(0))">
+                  
+                  <label class="control-label" for="inputLarge">Second question</label>
+                  <input class="form-control input-lg" type="text" id="inputLarge" name="q2" value="@Html(questions(1))">
+                  
+                  <label class="control-label" for="inputLarge">Third question</label>
+                  <input class="form-control input-lg" type="text" id="inputLarge" name="q3" value="@Html(questions(2))">
+                  
+                  <label class="control-label" for="inputLarge">Fourth question</label>
+                  <input class="form-control input-lg" type="text" id="inputLarge" name="q4" value="@Html(questions(3))">
+                  
+                  <label class="control-label" for="inputLarge">Fifth question</label>
+                  <input class="form-control input-lg" type="text" id="inputLarge" name="q5" value="@Html(questions(4))">
+                  
+                  <label class="control-label" for="inputLarge">Sixth question</label>
+                  <input class="form-control input-lg" type="text" id="inputLarge" name="q6" value="@Html(questions(5))">
+                  
+                  <label class="control-label" for="inputLarge">Seventh question</label>
+                  <input class="form-control input-lg" type="text" id="inputLarge" name="q7" value="@Html(questions(6))">
+                  
+                  
                 </div>
-              
+                <div class="logouttoast" id="toast" style="display:none; float:left;">Updated.</div>
+                <div style="float: right;margin-left:0%;">
+                     
+                      <button type="button" class="btn btn-primary" onClick="postquestions();">Submit</button> 
+                    </div>
+                
               </form>
 
             
-
+<br/>
+<br/>
       <footer>
         <div class="row">
           <div class="col-lg-12">

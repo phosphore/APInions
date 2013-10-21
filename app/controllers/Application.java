@@ -2,6 +2,7 @@ package controllers;
 
 import play.*;
 import play.mvc.*;
+import play.mvc.Http.RequestBody;
 import play.api.db.DB;
 
 import java.net.InetAddress;
@@ -10,11 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import views.html.*;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 
 import static play.data.Form.*;
@@ -24,6 +28,7 @@ import java.text.DateFormat;
 
 import net.firefang.ip2c.*;
 import org.codehaus.jackson.JsonNode;
+
 
 
 public class Application extends Controller {
@@ -153,13 +158,70 @@ public class Application extends Controller {
     	  }
 		
 }
+    
+    
+    //WIP
     @Security.Authenticated(Secured.class)
     public static Result editq()
     {
-    	
-    	return ok(editq.render());
+    	String[] questions = new String[7];
+    	Connection conn = play.db.DB.getConnection();
+    	String tablecontent = "";
+    	    try {
+    			ResultSet rs;
+    			Statement stat = conn.createStatement();
+    			rs = stat.executeQuery("SELECT * FROM questions");
+    			while (rs.next()) {
+    				questions[0] = rs.getString("QuestionA");
+    				questions[1] = rs.getString("QuestionB");
+    				questions[2] = rs.getString("QuestionC");
+    				questions[3] = rs.getString("QuestionD");
+    				questions[4] = rs.getString("QuestionE");
+    				questions[5] = rs.getString("QuestionF");
+    				questions[6] = rs.getString("QuestionG");
+    				String[] tmp = questions.clone();
+    				
+    			}
+    		    conn.close();
+    			}
+    		catch (SQLException e)
+    			{
+    				e.printStackTrace();
+    			}
+    		finally 
+    			{
+    				return ok(editq.render(questions));
+    			}
     }
     
+    @Security.Authenticated(Secured.class)
+    public static Result editqpost()
+    {
+    	//not working with dynamicforms of play, neither with map = request().body().asFormUrlEncoded(). ??
+    	//DynamicForm dynamicForm = form().bindFromRequest();
+    	String q1,q2,q3,q4,q5,q6,q7;
+    	DynamicForm values = form().bindFromRequest();
+        q1 = values.get("q1");
+        q2 = values.get("q2");
+        q3 = values.get("q3");
+        q4 = values.get("q4");
+        q5 = values.get("q5");
+        q6 = values.get("q6");
+        q7 = values.get("q7");
+        Connection conn = play.db.DB.getConnection();
+        try {
+			Statement stat = conn.createStatement();
+			String queryconcat = "UPDATE questions SET QuestionA = \""+q1+"\", QuestionB = \""+q2+"\", QuestionC = \""+q3+"\", QuestionD = \""+q4+"\", QuestionE = \""+q5+"\", QuestionF = \""+q6+"\", QuestionG = \""+q7+"\"";
+			stat.executeUpdate(queryconcat);
+		    conn.close();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+			
+		} finally {
+	    	return ok();//editq.render());
+	    }
+    }
     
     
     
